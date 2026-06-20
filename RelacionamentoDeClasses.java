@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 // ---- Associação ----
 class Aluno{
@@ -41,11 +40,44 @@ class Escola{
 
 // ---- Composição ----
 class SalaDeAula{
-    Lousa lousa = new Lousa(); 
+    private Lousa lousa = new Lousa(); 
+    void iniciarAula(){
+        lousa.escrever("Bem-vindos à aula de POO!");
+    }
 }
 
 class Lousa{ 
-    // Só existe em sala de aula
+    void escrever(String texto){
+        System.out.println("Escrevendo na lousa :" + texto);
+    }// Só existe em sala de aula
+}
+
+// ---- Coesão e acoplamento ----
+
+
+class CalculadoraDeNotas {
+    //Alta coesão porque opera somente com notas
+    double calcularMedia(double n1, double n2){
+        return ((n1 + n2)/2);
+    }
+
+    boolean passou(double media) {
+        return media >= 7.0;
+    }
+}
+
+class Avaliacao {
+    private CalculadoraDeNotas calculadora;
+
+    Avaliacao(CalculadoraDeNotas calculadora){
+        this.calculadora = calculadora;
+    }
+
+    void avaliar(String aluno, double nota1, double nota2){
+        double media = calculadora.calcularMedia(nota1, nota2);
+        System.out.println(aluno + " teve média : " + media);
+        System.out.println(calculadora.passou(media) ? "Aprovado" : "Reprovado");
+    }
 }
 
 public class RelacionamentoDeClasses{
@@ -53,13 +85,23 @@ public class RelacionamentoDeClasses{
 
         // ---- Associação ----
         Aluno a1 = new Aluno("Ângelo Miguel ");
+        Aluno a2 = new Aluno("David Kauã ");
         Professor p1 = new Professor(" Pedro Victor");
         a1.conversar(p1);
 
         // ---- Agregação ----
-        Escola e1 = new Escola("IFRN-SGA", Arrays.asList(a1));
-        e1.listarAlunos();
+        Escola e1 = new Escola("IFRN-SGA", Arrays.asList(a1,a2));
+        e1.listarAlunos(Arrays.asList(a1, a2));
 
+        // ---- Composição ----
+        SalaDeAula s1 = new SalaDeAula();
+        s1.iniciarAula();
+
+        // ---- Coesão e acoplamento ----
+        CalculadoraDeNotas calc = new CalculadoraDeNotas();
+        Avaliacao avaliacao = new Avaliacao(calc);
+        avaliacao.avaliar("Ângelo", 9.0, 9.0);
+        
     }
 
 
